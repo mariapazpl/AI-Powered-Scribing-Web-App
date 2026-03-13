@@ -39,7 +39,7 @@ load_dotenv()
 
 client = Together(
     api_key=os.environ.get("TOGETHER_API_KEY"),
-    timeout=60
+    timeout=300
 )
 
 app = Flask(__name__)
@@ -140,7 +140,7 @@ def process_audio_chunk(chunk_path, chunk_index):
         logger.error(f"Error processing chunk {chunk_index}: {str(e)}")
         return False, "", str(e)
 
-def process_long_audio_parallel(audio_file_path, max_duration=300):
+def process_long_audio_parallel(audio_file_path, max_duration=900):
     """
     Process long audio files by splitting into chunks and processing in parallel.
     """

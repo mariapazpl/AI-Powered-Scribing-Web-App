@@ -22,4 +22,4 @@ RUN pip install --no-cache-dir -r requirements.txt
 EXPOSE 8080
 
 # Start the Flask app with gunicorn
-CMD ["gunicorn", "--bind", "0.0.0.0:8080","--timeout", "180", "App:app"]
+CMD ["gunicorn", "--bind", "0.0.0.0:8080","--timeout", "1000", "App:app"]
