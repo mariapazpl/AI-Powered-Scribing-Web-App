@@ -37,7 +37,10 @@ except ImportError:
 # Load env variables
 load_dotenv()
 
-client = Together(api_key=os.environ.get("TOGETHER_API_KEY"))
+client = Together(
+    api_key=os.environ.get("TOGETHER_API_KEY"),
+    timeout=60
+)
 
 app = Flask(__name__)
 
