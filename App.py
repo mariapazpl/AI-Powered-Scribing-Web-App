@@ -545,7 +545,7 @@ def generate_clinical_report(transcript, template_analysis):
 
     try:
         response = client.chat.completions.create(
-            model="Qwen/Qwen3-235B-A22B-Instruct-2507-tput",  
+            model="Qwen/Qwen3.7-Plus",  
             messages=[
                 {
                     "role": "system",
