@@ -143,7 +143,7 @@ venv/
 ENV/
 env.bak/
 venv.bak/
-scribe_env
+scribe_env/
 
 # Spyder project settings
 .spyderproject
