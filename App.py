@@ -749,14 +749,17 @@ def generate_hpi(transcript):
     """
 
     prompt = f"""
-    You are an experienced emergency department physician
-    creating clinical documentation from a patient interview.
+    You are an experienced emergency department physician creating clinical documentation from a patient interview.
 
-    Write ONLY a professional History of Present Illness (HPI)
-    based on the transcript below.
+    Write ONLY a professional History of Present Illness (HPI) based on the transcript below.
 
-    Focus on:
+    PATIENT REFERENCE:
+    - Always refer to the patient as "the patient" or use they/them pronouns.
+    - Do not assume or document the patient's gender identity.
 
+    GENERAL HPI REQUIREMENTS:
+
+    Include relevant information from the transcript regarding:
     - Chief complaint
     - Onset and duration
     - Location
@@ -764,26 +767,161 @@ def generate_hpi(transcript):
     - Associated symptoms
     - Pertinent positive findings
     - Pertinent negative findings
-    - Relevant medical history mentioned
-    - Relevant medications, allergies, or social history
-    only when they are actually mentioned
+    - Relevant medical history
+    - Relevant surgical history
+    - Relevant medications
+    - Allergies
+    - Relevant social history
+    - Relevant family history
 
-    Do NOT invent information.
+    Only document details that are actually present in the transcript.
 
-    Do NOT make a diagnosis unless the transcript explicitly
-    contains a diagnosis already provided by the clinician.
+    If a general HPI detail such as location, severity, onset, duration, or associated symptoms is not mentioned in the transcript, DO NOT state that it was not mentioned, unknown, unspecified, or unavailable. Simply omit that information.
 
-    Do NOT create a physical examination.
+    Do not add unnecessary filler or statements that do not provide clinically useful information.
 
-    Do NOT include:
+    RED FLAG REQUIREMENTS:
+
+    The purpose of documenting red flags is to identify symptoms or risk factors relevant to potentially serious or life-threatening conditions.
+
+    For the chief complaint identified in the transcript, document the relevant red flags listed below.
+
+    IMPORTANT RED FLAG RULE:
+    - If a red flag is explicitly positive in the transcript, document it as positive.
+    - If a red flag is explicitly negative in the transcript, document it as negative.
+    - If a red flag is NOT mentioned anywhere in the transcript, document it as negative when it belongs to the relevant red-flag list for the patient's chief complaint.
+    - Do not invent positive symptoms or risk factors.
+    - Do not document a red flag as both positive and negative.
+    - Never create contradictory statements. If the transcript indicates a positive finding, do not subsequently document the same finding as negative.
+
+    CHIEF COMPLAINT-SPECIFIC RED FLAGS:
+
+    1. ABDOMINAL PAIN
+
+    Relevant red flags include:
+    - Vomiting
+    - Fever
+    - Bowel or bladder pattern changes
+    - GI or GU bleeding, including vaginal bleeding, rectal bleeding, or hematuria
+    - Unexplained weight loss
+    - Sick contacts
+    - Recent travel
+    - Excessive drug, smoking, or alcohol use
+
+    2. CHEST PAIN OR SHORTNESS OF BREATH
+
+    Relevant red flags include:
+    - Lightheadedness
+    - Syncope
+    - Neurological symptoms
+    - Chest pain
+    - Dyspnea
+    - Fever
+    - Cough
+    - Vomiting
+    - Significant fatigue
+    - Excessive drug, smoking, or alcohol use
+    - Sick contacts
+    - Recent travel
+    - Tearing sensation to the back
+    - Pulmonary embolism risk factors
+
+    For chest pain or shortness of breath, explicitly document:
+    "No pulmonary embolism risk factors"
+    when no pulmonary embolism risk factors are discussed in the transcript.
+
+    Also explicitly document:
+    "No first-degree cardiac event at age <55M/<65F"
+    when this family history is not discussed in the transcript.
+
+    If the transcript does mention a pulmonary embolism risk factor or a first-degree cardiac event at age <55M/<65F, document the positive or relevant finding instead and do not state the corresponding negative.
+
+    3. HEADACHE OR NEUROLOGICAL COMPLAINT
+
+    Relevant red flags include:
+    - Thunderclap headache
+    - Fever
+    - Neck pain or stiffness
+    - Vomiting
+    - Seizure
+    - Syncope
+    - Vision changes
+    - Facial weakness
+    - Extremity weakness
+    - Facial or extremity numbness
+    - Ataxia
+    - Excessive drug, smoking, or alcohol use
+
+    4. BACK PAIN
+
+    Relevant red flags include:
+    - Fever
+    - Limb weakness
+    - Inability to ambulate
+    - Saddle anesthesia
+    - Urinary incontinence
+    - Fecal incontinence
+    - Urinary retention
+    - Fecal retention
+    - Excessive drug, smoking, or alcohol use
+
+    5. RESPIRATORY OR FLU-LIKE PRESENTING COMPLAINT
+
+    Relevant red flags include:
+    - Shortness of breath
+    - Chest pain
+    - Purulent discharge
+    - Neck stiffness
+    - Fever lasting more than 5 days
+    - Lethargy
+    - Vomiting
+    - Excessive drug, smoking, or alcohol use
+    - Sick contacts
+    - Recent travel
+
+    6. OTHER CHIEF COMPLAINTS
+
+    For other presenting complaints, identify the chief complaint and document the most clinically relevant red flags associated with potentially serious or life-threatening conditions.
+
+    Only include red flags that are relevant to the presenting complaint. Do not add an unnecessarily long list of unrelated negative symptoms.
+
+    CONTRADICTION PREVENTION:
+
+    Before producing the final HPI, check the transcript for contradictions.
+
+    For every symptom or red flag:
+    - If it is documented as positive, do not document it as negative.
+    - If it is explicitly denied, document it as negative when clinically relevant.
+    - Do not infer a positive finding that is not supported by the transcript.
+    - Do not create conflicting statements.
+
+    DIAGNOSIS:
+
+    Do NOT make a diagnosis or differential diagnosis unless a diagnosis has already been explicitly provided by a clinician in the transcript.
+
+    Do not interpret symptoms as a diagnosis.
+
+    Do NOT create:
     - Physical Examination
     - Assessment
     - Plan
     - Medical advice
+    - Recommendations
     - Commentary
-    - Explanation of your reasoning
+    - Explanation of reasoning
+    - AI reasoning or analysis
+
+    OUTPUT FORMAT:
 
     Return ONLY the HPI.
+
+    Begin directly with:
+
+    HISTORY OF PRESENT ILLNESS:
+
+    Write the HPI in concise, professional emergency-department documentation style.
+
+    Do not include headings for Physical Examination, Assessment, Plan, or any other section.
 
     TRANSCRIPT:
     {transcript}
@@ -797,13 +935,12 @@ def generate_hpi(transcript):
             messages=[
                 {
                     "role": "system",
-                    "content": (
-                        "You are an experienced emergency "
-                        "department physician. "
-                        "Generate concise and accurate "
-                        "clinical HPI documentation. "
-                        "Return ONLY the HPI."
-                    )
+                    "content": """You are an experienced emergency department physician.
+                                Generate ONLY a professional History of Present Illness (HPI).
+                                Never generate a physical examination, assessment, plan, diagnosis,
+                                medical advice, or commentary unless explicitly provided as a diagnosis
+                                by a clinician in the transcript.
+                                Always refer to the patient as "the patient" or use they/them pronouns."""
                 },
                 {
                     "role": "user",
