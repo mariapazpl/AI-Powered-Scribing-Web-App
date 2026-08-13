@@ -1,2 +1,25 @@
 # [AI-Powered Medical Scribing App](https://aiscribe.fly.dev)
-This application is an AI-powered medical scribing tool that records doctor–patient conversations and automatically generates the History (Hx) and Physical Exam (PE) sections of a clinical note. It uses a normal negative PE template and updates it by inserting any abnormal findings mentioned during the conversation while removing or adjusting contradictory statements. If no findings are stated, the default template is used. The app focuses on producing an accurate History section, which is the most valuable part for physicians, while also ensuring patient privacy by removing any personal details from the final output. To improve transcription quality, the system supports medical vocabulary handling so that clinical terms are recognized and documented correctly.
+
+## Overview
+
+This application records doctor–patient conversations and uses AI to automatically generate a professional **History of Present Illness (HPI)**.
+
+The app is designed to help physicians save time when documenting patient encounters.
+
+## Features
+
+- Record doctor–patient conversations
+- Automatically transcribe audio
+- Generate an AI-powered HPI
+- Include relevant positive and negative findings
+- Identify relevant red flags based on the patient's complaint
+- Copy the generated HPI to the clipboard
+- View the transcription optionally
+
+## How It Works
+
+1. Record the conversation.
+2. Stop the recording and process the audio.
+3. The audio is transcribed.
+4. The AI generates an HPI from the transcript.
+5. Review or copy the generated HPI.
